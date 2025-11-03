@@ -1,0 +1,58 @@
+#include <stdio.h>
+#define V 6
+
+int graph[V][V] = {
+    {0, 1, 1, 1, 0, 0},
+    {1, 0, 1, 0, 0, 0},
+    {1, 1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 1, 1},
+    {0, 0, 0, 1, 0, 1},
+    {0, 0, 0, 1, 1, 0}
+};
+
+int isSafe(int v, int graph[V][V], int color[V], int c) {
+    int i;
+    for (i = 0; i < V; i++) {
+        if (graph[v][i] == 1 && color[i] == c)
+            return 0;
+    }
+    return 1;
+}
+
+int colorGraph(int graph[V][V], int m, int color[V], int v) {
+    if (v == V)
+        return 1;
+
+    int c;
+    for (c = 1; c <= m; c++) {
+        if (isSafe(v, graph, color, c)) {
+            color[v] = c;
+            if (colorGraph(graph, m, color, v + 1))
+                return 1;
+            color[v] = 0;
+        }
+    }
+    return 0;
+}
+
+void printColors(int color[V]) {
+    int i;
+    printf("\nColor assigned to each node:\n");
+    for (i = 0; i < V; i++) {
+        printf("Node %d --> Color %d\n", i + 1, color[i]);
+    }
+}
+
+int main() {
+    int m;
+    int color[V] = {0};
+    printf("Enter number of available colors (frequencies): ");
+    scanf("%d", &m);
+
+    if (colorGraph(graph, m, color, 0) == 0)
+        printf("No solution exists.\n");
+    else
+        printColors(color);
+
+    return 0;
+}
